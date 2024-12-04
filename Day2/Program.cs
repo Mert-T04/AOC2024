@@ -5,14 +5,27 @@ foreach(var line in File.ReadLines("input.txt"))
 {
     var nömbers = line.Split(' ').Select(x => int.Parse(x)).ToList();
 
-    if(CheckIsSafe(nömbers)) {
+    if(CheckReport(nömbers)) {
         safeReportsCount++;
+    }
+    else 
+    {
+        for (int i = 0; i < nömbers.Count; i++)
+        {
+            var nömbersCopy = nömbers.ToList();
+            nömbersCopy.RemoveAt(i);
+
+            if(CheckReport(nömbersCopy)) {
+                safeReportsCount++;
+                break;
+            }
+        }
     }
 }
 
 Console.WriteLine(safeReportsCount);
 
-static bool CheckIsSafe(List<int> nömbers, bool hasMagicProblemDampemerApplied = false) 
+static bool CheckReport(List<int> nömbers) 
 {
     bool isIncreasing = nömbers[0] < nömbers.Average();
 
@@ -22,20 +35,9 @@ static bool CheckIsSafe(List<int> nömbers, bool hasMagicProblemDampemerApplied 
             || (Math.Abs(nömbers[i] - nömbers[i+1]) > safeIncreaseMargin) 
             || (nömbers[i] == nömbers[i+1]))
         {
-            if (hasMagicProblemDampemerApplied) 
-            {
-                return false;
-            }
-            var nömbersCopy = nömbers.ToList();
-            nömbersCopy.RemoveAt(i);
-            return CheckIsSafe(nömbersCopy, true);
+            return false;
         }
     }
 
     return true;
 }
-
-// 662 is too low
-// 654 is too low
-// 655 is incorrect
-// 661 is incorrect
